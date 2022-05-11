@@ -12,14 +12,12 @@
 #endif
 
 #include <PID_v1.h>
-
 /*Constructor (...)*********************************************************
  *    The parameters specified here are those for for which we can't set up
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
 PID::PID(double* Input, double* Output, double* Setpoint,
-        double Kp, double Ki, double Kd, int POn, int ControllerDirection)
-{
+        double Kp, double Ki, double Kd, int POn, int ControllerDirection){
     myOutput = Output;
     myInput = Input;
     mySetpoint = Setpoint;
@@ -43,9 +41,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
 
 PID::PID(double* Input, double* Output, double* Setpoint,
         double Kp, double Ki, double Kd, int ControllerDirection)
-    :PID::PID(Input, Output, Setpoint, Kp, Ki, Kd, P_ON_E, ControllerDirection)
-{
-
+    :PID::PID(Input, Output, Setpoint, Kp, Ki, Kd, P_ON_E, ControllerDirection){
 }
 
 
@@ -55,8 +51,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
  *   pid Output needs to be computed.  returns true when the output is computed,
  *   false when nothing has been done.
  **********************************************************************************/
-bool PID::Compute()
-{
+bool PID::Compute(){
    if(!inAuto) return false;
    unsigned long now = millis();
    unsigned long timeChange = (now - lastTime);
@@ -99,8 +94,7 @@ bool PID::Compute()
  * it's called automatically from the constructor, but tunings can also
  * be adjusted on the fly during normal operation
  ******************************************************************************/
-void PID::SetTunings(double Kp, double Ki, double Kd, int POn)
-{
+void PID::SetTunings(double Kp, double Ki, double Kd, int POn){
    if (Kp<0 || Ki<0 || Kd<0) return;
 
    pOn = POn;
@@ -131,8 +125,7 @@ void PID::SetTunings(double Kp, double Ki, double Kd){
 /* SetSampleTime(...) *********************************************************
  * sets the period, in Milliseconds, at which the calculation is performed
  ******************************************************************************/
-void PID::SetSampleTime(int NewSampleTime)
-{
+void PID::SetSampleTime(int NewSampleTime){
    if (NewSampleTime > 0)
    {
       double ratio  = (double)NewSampleTime
@@ -151,8 +144,7 @@ void PID::SetSampleTime(int NewSampleTime)
  *  want to clamp it from 0-125.  who knows.  at any rate, that can all be done
  *  here.
  **************************************************************************/
-void PID::SetOutputLimits(double Min, double Max)
-{
+void PID::SetOutputLimits(double Min, double Max){
    if(Min >= Max) return;
    outMin = Min;
    outMax = Max;
@@ -172,8 +164,7 @@ void PID::SetOutputLimits(double Min, double Max)
  * when the transition from manual to auto occurs, the controller is
  * automatically initialized
  ******************************************************************************/
-void PID::SetMode(int Mode)
-{
+void PID::SetMode(int Mode){
     bool newAuto = (Mode == AUTOMATIC);
     if(newAuto && !inAuto)
     {  /*we just went from manual to auto*/
@@ -186,8 +177,7 @@ void PID::SetMode(int Mode)
  *	does all the things that need to happen to ensure a bumpless transfer
  *  from manual to automatic mode.
  ******************************************************************************/
-void PID::Initialize()
-{
+void PID::Initialize(){
    outputSum = *myOutput;
    lastInput = *myInput;
    if(outputSum > outMax) outputSum = outMax;
@@ -200,8 +190,7 @@ void PID::Initialize()
  * know which one, because otherwise we may increase the output when we should
  * be decreasing.  This is called from the constructor.
  ******************************************************************************/
-void PID::SetControllerDirection(int Direction)
-{
+void PID::SetControllerDirection(int Direction){
    if(inAuto && Direction !=controllerDirection)
    {
 	    kp = (0 - kp);
@@ -221,4 +210,3 @@ double PID::GetKi(){ return  dispKi;}
 double PID::GetKd(){ return  dispKd;}
 int PID::GetMode(){ return  inAuto ? AUTOMATIC : MANUAL;}
 int PID::GetDirection(){ return controllerDirection;}
-
