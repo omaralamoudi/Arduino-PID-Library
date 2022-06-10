@@ -89,6 +89,10 @@ bool PID::Compute(){
    else return false;
 }
 
+void PID::SetInput(double* newInput){
+   myInput = newInput;
+}
+
 /* SetTunings(...)*************************************************************
  * This function allows the controller's dynamic performance to be adjusted.
  * it's called automatically from the constructor, but tunings can also
